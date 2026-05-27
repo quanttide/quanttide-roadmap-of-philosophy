@@ -22,16 +22,16 @@
 一个 spec 包含三层：
 
 ```
-ontology      → 概念的类型定义（枚举、结构体）
+schemas       → 数据模式定义（枚举、结构体）
 stages        → 状态空间和合法转移
-expand        → 迭代上限
+constraints   → 约束条件
 ```
 
 ### 例子
 
 ```yaml
 # spec.yaml
-ontology:
+schemas:
   ReleaseStatus:
     enum: [Staged, Published, Retired]
 
@@ -40,20 +40,10 @@ stages:
   staged:     { to: [published, retired, self: restage] }
   published:  { to: [retired] }
 
-expand:
+constraints:
   staged:
     restage: { max: 5 }
 ```
-
-## 关键决策
-
-| 决策 | 选择 | 理由 |
-|------|------|------|
-| 事实源 | spec.yaml | 人和 AI 共读写，配形式化校验 |
-| 形态翻译 | translate | YAML ↔ Lean 等价转换，不是生成 |
-| 验证方式 | Lean 类型检查 | 封闭公理系统，AI 不能自由发挥 |
-| 范畴结构 | 自由范畴 | 路径独立性，每条路径唯一 |
-| 模型中心 | spec | 不是 contract，不是 code，是规格本身 |
 
 ## 范畴视角
 
@@ -67,8 +57,7 @@ spec ──implement──→ impl
 spec 内部有自态射族：
 
 ```
-spec ──translate──→ spec（形态切换）
-    ──validate────→ spec（自洽性校验）
+spec ──validate────→ spec（自洽性校验）
 ```
 
 自由范畴保留每条路径的独立身份，不假设等价关系。
